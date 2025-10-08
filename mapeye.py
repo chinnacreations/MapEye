@@ -244,32 +244,35 @@ def main():
 				print(G + '[+]' + C + ' Browser    : ' + W + var_browser)
 				print(G + '[+]' + C + ' Public IP  : ' + W + var_ip)
 
-				rqst = requests.get('http://free.ipwhois.io/json/{}'.format(var_ip))
-				sc = rqst.status_code
+				rqst = requests.get(f"https://ipwhois.app/json/{var_ip}")
+			sc = rqst.status_code
 
-				if sc == 200:
-					data = rqst.text
-					data = json.loads(data)
-					var_continent = str(data['continent'])
-					var_country = str(data['country'])
-					var_region = str(data['region'])
-					var_city = str(data['city'])
-					var_org = str(data['org'])
-					var_isp = str(data['isp'])
+			if sc == 200:
+				data = rqst.json()
 
-					row.append(var_continent)
-					row.append(var_country)
-					row.append(var_region)
-					row.append(var_city)
-					row.append(var_org)
-					row.append(var_isp)
+				var_continent = str(data.get('continent', data.get('continent_name', 'Unknown')))
+				var_country   = str(data.get('country', data.get('country_name', 'Unknown')))
+				var_region    = str(data.get('region', data.get('region_name', 'Unknown')))
+				var_city      = str(data.get('city', 'Unknown'))
+				var_org       = str(data.get('org', data.get('organization', 'Unknown')))
+				var_isp       = str(data.get('isp', data.get('asn_org', 'Unknown')))
 
-					print(G + '[+]' + C + ' Continent  : ' + W + var_continent)
-					print(G + '[+]' + C + ' Country    : ' + W + var_country)
-					print(G + '[+]' + C + ' Region     : ' + W + var_region)
-					print(G + '[+]' + C + ' City       : ' + W + var_city)
-					print(G + '[+]' + C + ' Org        : ' + W + var_org)
-					print(G + '[+]' + C + ' ISP        : ' + W + var_isp)
+				row.append(var_continent)
+				row.append(var_country)
+				row.append(var_region)
+				row.append(var_city)
+				row.append(var_org)
+				row.append(var_isp)
+
+				print(G + '[+]' + C + ' Continent  : ' + W + var_continent)
+				print(G + '[+]' + C + ' Country    : ' + W + var_country)
+				print(G + '[+]' + C + ' Region     : ' + W + var_region)
+				print(G + '[+]' + C + ' City       : ' + W + var_city)
+				print(G + '[+]' + C + ' Org        : ' + W + var_org)
+				print(G + '[+]' + C + ' ISP        : ' + W + var_isp)
+			else:
+				print(R + '[-]' + C + ' Failed to fetch location details (status {})'.format(sc) + W)
+
 	except ValueError:
 		pass
 
